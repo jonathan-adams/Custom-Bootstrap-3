@@ -1,7 +1,7 @@
 /* jshint node: true */
 
-module.exports = function(grunt) {
-  "use strict";
+module.exports = function (grunt) {
+  'use strict';
 
   // Force use of Unix newlines
   grunt.util.linefeed = '\n';
@@ -31,6 +31,24 @@ module.exports = function(grunt) {
       },
       gruntfile: {
         src: 'Gruntfile.js'
+      },
+      src: {
+        src: ['js/*.js']
+      },
+      test: {
+        src: ['js/tests/unit/*.js']
+      },
+      assets: {
+        src: ['docs-assets/js/application.js', 'docs-assets/js/customizer.js']
+      }
+    },
+
+    jscs: {
+      options: {
+        config: 'js/.jscs.json',
+      },
+      gruntfile: {
+        src: ['Gruntfile.js']
       },
       src: {
         src: ['js/*.js']
@@ -72,6 +90,16 @@ module.exports = function(grunt) {
       bootstrap: {
         src: ['<%= concat.bootstrap.dest %>'],
         dest: 'dist/js/<%= pkg.name %>.min.js'
+      },
+      customize: {
+        src: [
+          'docs-assets/js/less.js',
+          'docs-assets/js/jszip.js',
+          'docs-assets/js/uglify.js',
+          'docs-assets/js/filesaver.js',
+          'docs-assets/js/customizer.js'
+        ],
+        dest: 'docs-assets/js/customize.js'
       }
     },
 
@@ -107,7 +135,7 @@ module.exports = function(grunt) {
     copy: {
       fonts: {
         expand: true,
-        src: ["fonts/*"],
+        src: ['fonts/*'],
         dest: 'dist/'
       }
     },
@@ -136,12 +164,12 @@ module.exports = function(grunt) {
       options: {
         reset: true,
         relaxerror: [
-          "Bad value X-UA-Compatible for attribute http-equiv on element meta.",
-          "Element img is missing required attribute src."
+          'Bad value X-UA-Compatible for attribute http-equiv on element meta.',
+          'Element img is missing required attribute src.'
         ]
       },
       files: {
-        src: ["_gh_pages/**/*.html"]
+        src: ['_gh_pages/**/*.html']
       }
     },
 
@@ -278,6 +306,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-html-validation');
   grunt.loadNpmTasks('grunt-jekyll');
+  grunt.loadNpmTasks('grunt-jscs-checker');
   grunt.loadNpmTasks('grunt-recess');
   grunt.loadNpmTasks('grunt-saucelabs');
   grunt.loadNpmTasks('grunt-sed');
@@ -286,7 +315,7 @@ module.exports = function(grunt) {
   grunt.registerTask('validate-html', ['jekyll', 'validation']);
 
   // Test task.
-  var testSubtasks = ['dist-css', 'jshint', 'qunit', 'validate-html'];
+  var testSubtasks = ['dist-css', 'jshint', 'jscs', 'qunit', 'validate-html'];
   // Only run Sauce Labs tests if there's a Sauce access key
   if (typeof process.env.SAUCE_ACCESS_KEY !== 'undefined') {
     testSubtasks.push('connect');
