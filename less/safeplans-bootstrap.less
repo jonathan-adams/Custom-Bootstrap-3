@@ -6,23 +6,22 @@
 @import "variables.less";
 @import "mixins.less";
 
-// Mizzou Color add ins and changes
+// Color add ins and changes
 
 	@safeRed:				#b23427;
 	@safeBlue:				#005488;
 	@navBackground:			#E8EDEE;
-	@links:					#0088cc;
 
 	// Links
 	// -------------------------
-	@linkColor:             @MUdark;
-	@linkColorHover:        darken(@linkColor, 15%);
+	@link-color:             lighten( @safeBlue, 15%);
+	@link-hover-color:       @safeBlue;
 
 	// Buttons
 	// -------------------------
-	@btnPrimaryBackground:              @links;
-	@btnMuBackground:					lighten(@MU, 20%);
-	@btnMuBackgroundHighLight:			@MU;
+	@btnPrimaryBackground:              lighten(@safeBlue, 20%);
+	@btnRedBackground:					lighten(@safeRed, 20%);
+	@btnRedBackgroundHighLight:			@safeRed;
 
 
 // Reset
@@ -42,7 +41,7 @@
 	// -------------------------
 	// Mu Gold color button
 	.btn-mu {
-		.button-variant(#fff; @btnMuBackground; darken(@btnMuBackground, 5%));
+		.button-variant(#fff; @btnRedBackground; darken(@btnRedBackground, 5%));
 	}
 	// Dark Gray color button
 	.btn-gray {
@@ -63,7 +62,6 @@
 	// -------------------------
 	.nav-list > .active > a,
 	.nav-list > .active > a:hover {
-	  background-color: @MU;
 	}
 
 @import "navbar.less";
@@ -78,8 +76,8 @@
 	.label,
 	.badge {
 	  // MU
-	  &-mu           { background-color: @MU; }
-	  &-mu[href]     { background-color: darken(@MU, 10%); }
+	  &-safered           { background-color: @btnRedBackground; }
+	  &-safered[href]     { background-color: darken(@btnRedBackground, 10%); }
 	}
 
 @import "jumbotron.less";
