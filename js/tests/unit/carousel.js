@@ -349,7 +349,7 @@ $(function () {
     $carousel.remove()
   })
 
-  test('should skip over non-items', function () {
+  test('should skip over non-items when using item indices', function () {
     var templateHTML = '<div id="myCarousel" class="carousel" data-interval="1814">'
         + '<div class="carousel-inner">'
         + '<div class="item active">'
@@ -372,5 +372,131 @@ $(function () {
     $template.bootstrapCarousel(1)
 
     strictEqual($template.find('.item')[1], $template.find('.active')[0], 'second item active')
+  })
+
+  test('should skip over non-items when using next/prev methods', function () {
+    var templateHTML = '<div id="myCarousel" class="carousel" data-interval="1814">'
+        + '<div class="carousel-inner">'
+        + '<div class="item active">'
+        + '<img alt="">'
+        + '</div>'
+        + '<script type="text/x-metamorph" id="thingy"/>'
+        + '<div class="item">'
+        + '<img alt="">'
+        + '</div>'
+        + '<div class="item">'
+        + '</div>'
+        + '</div>'
+        + '</div>'
+    var $template = $(templateHTML)
+
+    $template.bootstrapCarousel()
+
+    strictEqual($template.find('.item')[0], $template.find('.active')[0], 'first item active')
+
+    $template.bootstrapCarousel('next')
+
+    strictEqual($template.find('.item')[1], $template.find('.active')[0], 'second item active')
+  })
+
+  test('should go to previous item if left arrow key is pressed', function () {
+    var templateHTML = '<div id="myCarousel" class="carousel" data-interval="false">'
+        + '<div class="carousel-inner">'
+        + '<div id="first" class="item">'
+        + '<img alt="">'
+        + '</div>'
+        + '<div id="second" class="item active">'
+        + '<img alt="">'
+        + '</div>'
+        + '<div id="third" class="item">'
+        + '<img alt="">'
+        + '</div>'
+        + '</div>'
+        + '</div>'
+    var $template = $(templateHTML)
+
+    $template.bootstrapCarousel()
+
+    strictEqual($template.find('.item')[1], $template.find('.active')[0], 'second item active')
+
+    $template.trigger($.Event('keydown', { which: 37 }))
+
+    strictEqual($template.find('.item')[0], $template.find('.active')[0], 'first item active')
+  })
+
+  test('should go to next item if right arrow key is pressed', function () {
+    var templateHTML = '<div id="myCarousel" class="carousel" data-interval="false">'
+        + '<div class="carousel-inner">'
+        + '<div id="first" class="item active">'
+        + '<img alt="">'
+        + '</div>'
+        + '<div id="second" class="item">'
+        + '<img alt="">'
+        + '</div>'
+        + '<div id="third" class="item">'
+        + '<img alt="">'
+        + '</div>'
+        + '</div>'
+        + '</div>'
+    var $template = $(templateHTML)
+
+    $template.bootstrapCarousel()
+
+    strictEqual($template.find('.item')[0], $template.find('.active')[0], 'first item active')
+
+    $template.trigger($.Event('keydown', { which: 39 }))
+
+    strictEqual($template.find('.item')[1], $template.find('.active')[0], 'second item active')
+  })
+
+  test('should support disabling the keyboard navigation', function () {
+    var templateHTML = '<div id="myCarousel" class="carousel" data-interval="false" data-keyboard="false">'
+        + '<div class="carousel-inner">'
+        + '<div id="first" class="item active">'
+        + '<img alt="">'
+        + '</div>'
+        + '<div id="second" class="item">'
+        + '<img alt="">'
+        + '</div>'
+        + '<div id="third" class="item">'
+        + '<img alt="">'
+        + '</div>'
+        + '</div>'
+        + '</div>'
+    var $template = $(templateHTML)
+
+    $template.bootstrapCarousel()
+
+    strictEqual($template.find('.item')[0], $template.find('.active')[0], 'first item active')
+
+    $template.trigger($.Event('keydown', { which: 39 }))
+
+    strictEqual($template.find('.item')[0], $template.find('.active')[0], 'first item still active after right arrow press')
+
+    $template.trigger($.Event('keydown', { which: 37 }))
+
+    strictEqual($template.find('.item')[0], $template.find('.active')[0], 'first item still active after left arrow press')
+  })
+
+  test('should only add mouseenter and mouseleave listeners when not on mobile', function () {
+    var isMobile     = 'ontouchstart' in document.documentElement
+    var templateHTML = '<div id="myCarousel" class="carousel" data-interval="false" data-pause="hover">'
+        + '<div class="carousel-inner">'
+        + '<div id="first" class="item active">'
+        + '<img alt="">'
+        + '</div>'
+        + '<div id="second" class="item">'
+        + '<img alt="">'
+        + '</div>'
+        + '<div id="third" class="item">'
+        + '<img alt="">'
+        + '</div>'
+        + '</div>'
+        + '</div>'
+    var $template = $(templateHTML).bootstrapCarousel()
+
+    $.each(['mouseover', 'mouseout'], function (i, type) {
+      strictEqual(type in $._data($template[0], 'events'), !isMobile, 'does' + (isMobile ? ' not' : '') + ' listen for ' + type + ' events')
+    })
   })
 })

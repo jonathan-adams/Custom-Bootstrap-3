@@ -29,22 +29,6 @@ $(function () {
     strictEqual($scrollspy[0], $el[0], 'collection contains element')
   })
 
-  // Does not work properly ATM, #13500 will fix this
-  test('should switch "active" class on scroll', function () {
-    var topbarHTML = '<div class="topbar">'
-        + '<div class="topbar-inner">'
-        + '<div class="container">'
-        + '<h3><a href="#">Bootstrap</a></h3>'
-        + '<li><a href="#masthead">Overview</a></li>'
-        + '</ul>'
-        + '</div>'
-        + '</div>'
-        + '</div>'
-    var $topbar = $(topbarHTML).bootstrapScrollspy()
-
-    ok($topbar.find('.active', true))
-  })
-
   test('should only switch "active" class on current target', function () {
     stop()
 
@@ -77,9 +61,9 @@ $(function () {
     var $section = $(sectionHTML).appendTo('#qunit-fixture')
 
     var $scrollspy = $section
-        .show()
-        .find('#scrollspy-example')
-        .bootstrapScrollspy({ target: '#ss-target' })
+      .show()
+      .find('#scrollspy-example')
+      .bootstrapScrollspy({ target: '#ss-target' })
 
     $scrollspy.on('scroll.bs.scrollspy', function () {
       ok($section.hasClass('active'), '"active" class still on root node')
@@ -107,8 +91,8 @@ $(function () {
         + '</div>'
     var $section = $(sectionHTML).appendTo('#qunit-fixture')
     var $scrollspy = $section
-        .show()
-        .filter('#content')
+      .show()
+      .filter('#content')
 
     $scrollspy.bootstrapScrollspy({ target: '#navigation', offset: $scrollspy.position().top })
 
@@ -124,12 +108,12 @@ $(function () {
 
   test('should add the active class to the correct element', function () {
     var navbarHtml =
-        '<div class="navbar">'
+        '<nav class="navbar">'
       + '<ul class="nav">'
       + '<li id="li-1"><a href="#div-1">div 1</a></li>'
       + '<li id="li-2"><a href="#div-2">div 2</a></li>'
       + '</ul>'
-      + '</div>'
+      + '</nav>'
     var contentHtml =
         '<div class="content" style="overflow: auto; height: 50px">'
       + '<div id="div-1" style="height: 100px; padding: 0; margin: 0">div 1</div>'
