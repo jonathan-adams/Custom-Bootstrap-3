@@ -4,12 +4,12 @@
 
 /*!
  * JavaScript for Bootstrap's docs (http://getbootstrap.com)
- * Copyright 2011-2014 Twitter, Inc.
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under the Creative Commons Attribution 3.0 Unported License. For
  * details, see http://creativecommons.org/licenses/by/3.0/.
  */
 
-/* global ZeroClipboard */
+/* global ZeroClipboard, addAnchors */
 
 !function ($) {
   'use strict';
@@ -101,7 +101,7 @@
     $('.bs-docs-popover').popover()
 
     // Button state demo
-    $('#loading-example-btn').click(function () {
+    $('#loading-example-btn').on('click', function () {
       var btn = $(this)
       btn.button('loading')
       setTimeout(function () {
@@ -109,60 +109,72 @@
       }, 3000)
     })
 
+    // Modal relatedTarget demo
+    $('#exampleModal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget) // Button that triggered the modal
+      var recipient = button.data('whatever') // Extract info from data-* attributes
+      // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+      // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+      var modal = $(this)
+      modal.find('.modal-title').text('New message to ' + recipient)
+      modal.find('.modal-body input').val(recipient)
+    })
+
+    // Activate animated progress bar
+    $('.bs-docs-activate-animated-progressbar').on('click', function () {
+      $(this).siblings('.progress').find('.progress-bar-striped').toggleClass('active')
+    })
 
     // Config ZeroClipboard
     ZeroClipboard.config({
-      moviePath: '/assets/flash/ZeroClipboard.swf',
+      swfPath: '/assets/flash/ZeroClipboard.swf',
       hoverClass: 'btn-clipboard-hover'
     })
 
-    // Insert copy to clipboard button before .highlight or .bs-example
+    // Insert copy to clipboard button before .highlight
     $('.highlight').each(function () {
-      var highlight = $(this)
-      var previous = highlight.prev()
       var btnHtml = '<div class="zero-clipboard"><span class="btn-clipboard">Copy</span></div>'
-
-      if (previous.hasClass('bs-example')) {
-        previous.before(btnHtml.replace(/btn-clipboard/, 'btn-clipboard with-example'))
-      } else {
-        highlight.before(btnHtml)
-      }
+      $(this).before(btnHtml)
     })
+
     var zeroClipboard = new ZeroClipboard($('.btn-clipboard'))
     var htmlBridge = $('#global-zeroclipboard-html-bridge')
 
     // Handlers for ZeroClipboard
-    zeroClipboard.on('load', function () {
+    zeroClipboard.on('ready', function () {
       htmlBridge
         .data('placement', 'top')
         .attr('title', 'Copy to clipboard')
         .tooltip()
+
+      // Copy to clipboard
+      zeroClipboard.on('copy', function (event) {
+        var highlight = $(event.target).parent().nextAll('.highlight').first()
+        event.clipboardData.setData('text/plain', highlight.text())
+      })
+
+      // Notify copy success and reset tooltip title
+      zeroClipboard.on('aftercopy', function () {
+        htmlBridge
+          .attr('title', 'Copied!')
+          .tooltip('fixTitle')
+          .tooltip('show')
+          .attr('title', 'Copy to clipboard')
+          .tooltip('fixTitle')
+      })
     })
 
-    // Copy to clipboard
-    zeroClipboard.on('dataRequested', function (client) {
-      var highlight = $(this).parent().nextAll('.highlight').first()
-      client.setText(highlight.text())
-    })
-
-    // Notify copy success and reset tooltip title
-    zeroClipboard.on('complete', function () {
-      htmlBridge
-        .attr('title', 'Copied!')
-        .tooltip('fixTitle')
-        .tooltip('show')
-        .attr('title', 'Copy to clipboard')
-        .tooltip('fixTitle')
-    })
-
-    // Notify copy failure
-    zeroClipboard.on('noflash wrongflash', function () {
-      htmlBridge
-        .attr('title', 'Flash required')
-        .tooltip('fixTitle')
-        .tooltip('show')
+    // Hide copy button on error
+    zeroClipboard.on('error', function () {
+      $('.zero-clipboard').remove()
+      ZeroClipboard.destroy()
     })
 
   })
 
 }(jQuery)
+
+;(function () {
+  'use strict';
+  addAnchors('.bs-docs-section > h1, .bs-docs-section > h2, .bs-docs-section > h3, .bs-docs-section > h4, .bs-docs-section > h5');
+})();
