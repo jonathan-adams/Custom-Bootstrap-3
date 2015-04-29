@@ -35,6 +35,22 @@
 @import "grid.less";
 @import "tables.less";
 @import "forms.less";
+
+	// Form Control Feedback override
+	//---------------------------------
+
+	.fa.form-control-feedback {
+		line-height: @input-height-base;
+		font-size: 24px;
+	}
+	.input-lg + .fa.form-control-feedback {
+		line-height: @input-height-large;
+		font-size: 28px;
+	}
+	.input-sm + .fa.form-control-feedback {
+		line-height: @input-height-small;
+	}
+
 @import "buttons.less";
 
 	// Buttons override
